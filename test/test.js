@@ -1,0 +1,1 @@
+const expressCIDR = require('../index');

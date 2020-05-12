@@ -1,0 +1,23 @@
+{
+  "name": "express-cidr",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KanghoonYi/express-cidr.git"
+  },
+  "keywords": [
+    "cidr",
+    "express"
+  ],
+  "author": "KanghoonYi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KanghoonYi/express-cidr/issues"
+  },
+  "homepage": "https://github.com/KanghoonYi/express-cidr#readme"
+}

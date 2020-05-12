@@ -1,0 +1,15 @@
+{
+  "extends": ["eslint:recommended"],
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 6
+  },
+  "rules": {
+    "indent": ["error", "tab"],
+    "no-tabs": ["error", { "allowIndentationTabs": true }],
+    "max-len": ["error", 200]
+  }
+}

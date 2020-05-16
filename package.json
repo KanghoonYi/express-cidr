@@ -14,14 +14,15 @@
     "cidr",
     "express"
   ],
-  "author": "KanghoonYi",
-  "license": "ISC",
+  "author": "KanghoonYi <rkdgnsdls@gmail.com>",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/KanghoonYi/express-cidr/issues"
   },
   "homepage": "https://github.com/KanghoonYi/express-cidr#readme",
   "dependencies": {},
   "devDependencies": {
-    "mocha": "^7.1.2"
+    "mocha": "^7.1.2",
+    "node-mocks-http": "^1.8.1"
   }
 }

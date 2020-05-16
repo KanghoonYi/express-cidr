@@ -27,9 +27,10 @@ export = function (rules: Array<string>, options: {
                     return false;
                 }
 
-                const diffPosition = 8 - (Math.floor(Math.log(result) / Math.LOG2E) + 1);
+                const diffPosition = 8 - Math.floor(Math.log(result) / Math.LOG2E);
 
                 if (checkLength < diffPosition) {
+					checkLength -= 8;
                     return false;
                 }
 
@@ -39,7 +40,7 @@ export = function (rules: Array<string>, options: {
     });
     return (req, res, next) => {
         const filteringResult = ruleFunctions.some((ruleFunction): boolean => {
-            return !ruleFunction();
+            return ruleFunction('192.169.1.2');
         });
 
         if (!filteringResult) {

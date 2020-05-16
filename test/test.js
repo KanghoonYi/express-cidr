@@ -4,7 +4,7 @@ const expressCIDR = require('../src');
 const { describe } = require('mocha');
 
 const expressMiddleware = expressCIDR([
-	'127.0.0.1/32',
+	// '127.0.0.1/32',
 	'192.168.1.1/16'
 ]);
 

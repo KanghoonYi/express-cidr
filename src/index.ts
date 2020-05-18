@@ -1,8 +1,6 @@
+import * as _ from 'lodash';
 
-
-export = function (rules: Array<string>, options: {
-    target: string
-} ) { // closure
+export = function (rules: Array<string>): object { // closure
     const ruleFunctions: Array<Function> = rules.map((value: string): Function => {
         const [prefix, prefixLength] = value.split('/');
         if (!prefix) {
@@ -38,14 +36,27 @@ export = function (rules: Array<string>, options: {
             });
         };
     });
-    return (req, res, next) => {
-        const filteringResult = ruleFunctions.some((ruleFunction): boolean => {
-            return ruleFunction('192.169.1.2');
-        });
+    return {
+    	getMiddleware(options: {
+			reqTargetPath: string,
+			reqProcessFn: Function
+		}) {
+    		const { reqTargetPath, reqProcessFn } = options;
+			return (req, res, next: Function | undefined) => {
+				let ipAddr: string = _.get(req, reqTargetPath);
+				if (reqProcessFn) {
+					ipAddr = reqProcessFn(ipAddr);
+				}
+				const filteringResult = ruleFunctions.some((ruleFunction): boolean => {
+					return ruleFunction(ipAddr);
+				});
 
-        if (!filteringResult) {
-            throw new Error('failed');
-        }
-        return next();
-    };
+				if (!filteringResult) {
+					throw new Error('failed');
+				}
+				return next();
+			};
+		},
+		ruleFunctions
+	};
 };

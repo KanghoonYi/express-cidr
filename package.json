@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "test": ""
+    "test": "mocha -r mocha-stress"
   },
   "repository": {
     "type": "git",
@@ -20,7 +20,9 @@
     "url": "https://github.com/KanghoonYi/express-cidr/issues"
   },
   "homepage": "https://github.com/KanghoonYi/express-cidr#readme",
-  "dependencies": {},
+  "dependencies": {
+    "lodash": "^4.17.15"
+  },
   "devDependencies": {
     "mocha": "^7.1.2",
     "node-mocks-http": "^1.8.1"

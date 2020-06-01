@@ -6,9 +6,9 @@ An [express.js]( https://github.com/visionmedia/express ) middleware for
 `Only for IPv4`
 
 - [Installation](#installation)
-- [Usage](#Usage)
-- [Options](#Options)
-- [Example](#Example)
+- [Usage](#usage)
+- [Options](#options)
+- [Example](#example)
 
 ## Installation
 ```

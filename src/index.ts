@@ -1,6 +1,10 @@
 import * as _ from 'lodash';
 
-export = function (rules: Array<string>): object { // closure
+export = function (rules: Array<string>, options: {
+	reqTargetPath: string,
+	reqProcessFn: Function
+}): object { // closure
+	const { reqTargetPath, reqProcessFn } = options;
     const ruleFunctions: Array<Function> = rules.map((value: string): Function => {
         const [prefix, prefixLength] = value.split('/');
         if (!prefix) {
@@ -36,27 +40,18 @@ export = function (rules: Array<string>): object { // closure
             });
         };
     });
-    return {
-    	getMiddleware(options: {
-			reqTargetPath: string,
-			reqProcessFn: Function
-		}) {
-    		const { reqTargetPath, reqProcessFn } = options;
-			return (req, res, next: Function | undefined) => {
-				let ipAddr: string = _.get(req, reqTargetPath);
-				if (reqProcessFn) {
-					ipAddr = reqProcessFn(ipAddr);
-				}
-				const filteringResult = ruleFunctions.some((ruleFunction): boolean => {
-					return ruleFunction(ipAddr);
-				});
+    return (req, res, next: Function | undefined) => {
+		let ipAddr: string = _.get(req, reqTargetPath);
+		if (reqProcessFn) {
+			ipAddr = reqProcessFn(ipAddr);
+		}
+		const filteringResult = ruleFunctions.some((ruleFunction): boolean => {
+			return ruleFunction(ipAddr);
+		});
 
-				if (!filteringResult) {
-					throw new Error('failed');
-				}
-				return next();
-			};
-		},
-		ruleFunctions
+		if (!filteringResult) {
+			throw new Error('failed');
+		}
+		return next();
 	};
 };

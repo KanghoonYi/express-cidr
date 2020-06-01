@@ -4,19 +4,18 @@ const httpMocks = require('node-mocks-http');
 
 const expressCIDR = require('../src');
 
-const { getMiddleware } = expressCIDR([
+const expressMiddleware = expressCIDR([
 	// '127.0.0.1/32',
 	'192.168.1.1/16',
 	'61.78.79.0/16'
-]);
-
-const expressMiddleware = getMiddleware({
+], {
 	reqTargetPath: 'headers.x-forwarded-for',
 	reqProcessFn: (ipAddrs) => {
 		const [ipAddr] = ipAddrs.split(',');
 		return ipAddr;
 	}
 });
+
 
 const request = httpMocks.createRequest({
 	method: 'GET',

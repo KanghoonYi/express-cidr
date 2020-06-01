@@ -28,7 +28,7 @@ app.get('/', expressCIDR([
         return ipAddr;
     }
 }), (req, res) => {
-    return req.send('OK');
+    return res.send('OK');
 });
 
 ```

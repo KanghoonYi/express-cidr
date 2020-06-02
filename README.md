@@ -1,5 +1,5 @@
 # express-cidr
-This is working on test. I recommend to using when version is 1.0.0
+This is being tested. It is recommended to use when version is 1.0.0
 
 An [express.js]( https://github.com/visionmedia/express ) middleware for
 [cidr]( https://github.com/KanghoonYi/express-cidr ).

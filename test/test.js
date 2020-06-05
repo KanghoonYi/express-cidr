@@ -2,12 +2,10 @@ const assert = require('assert');
 const { describe, it } = require('mocha');
 const httpMocks = require('node-mocks-http');
 
-const expressCIDR = require('../src');
+const { generateMiddleware: expressCIDR, OutOfRange } = require('../src');
 
 const expressMiddleware = expressCIDR([
-	// '127.0.0.1/32',
-	'192.168.1.1/16',
-	'61.78.79.0/16'
+	'10.10.1.32/27',
 ], {
 	reqTargetPath: 'headers.x-forwarded-for',
 	reqProcessFn: (ipAddrs) => {
@@ -17,11 +15,19 @@ const expressMiddleware = expressCIDR([
 });
 
 
-const request = httpMocks.createRequest({
+const successRequest = httpMocks.createRequest({
 	method: 'GET',
 	url: '/',
 	headers: {
-		'x-forwarded-for': '61.78.79.204, 52.46.53.141'
+		'x-forwarded-for': '10.10.1.44'
+	}
+});
+
+const falseRequest = httpMocks.createRequest({
+	method: 'GET',
+	url: '/',
+	headers: {
+		'x-forwarded-for': '10.10.1.90'
 	}
 });
 
@@ -29,9 +35,24 @@ const response = httpMocks.createResponse();
 
 describe('test basic running', function () {
 	it('should return true', function () {
-		assert.strictEqual(expressMiddleware(request, response, function () {
+		assert.strictEqual(expressMiddleware(successRequest, response, function () {
 			return true;
 		}), true);
+		assert.ok(true);
+	});
+	// it('should throw error', function () {
+	// 	assert.throws(expressMiddleware(falseRequest, response, function () {
+	// 		return false;
+	// 	}), (error) => {
+	// 		assert(error instanceof OutOfRange);
+	// 		return true;
+	// 	});
+	// 	assert.ok(true);
+	// });
+	it('should throw error', function () {
+		assert.throws(expressMiddleware(falseRequest, response, function () {
+			return false;
+		}), new OutOfRange());
 		assert.ok(true);
 	});
 });
@@ -39,7 +60,7 @@ describe('test basic running', function () {
 describe('stress test', function () {
 	it('should return true', function () {
 		for (let i = 0;  i < 1000000; i += 1) {
-			assert.strictEqual(expressMiddleware(request, response, function () {
+			assert.strictEqual(expressMiddleware(successRequest, response, function () {
 				return true;
 			}), true);
 		}

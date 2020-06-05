@@ -17,9 +17,9 @@ npm install express-cidr
 
 ## Usage
 ```
-const expressCIDR = require('express-cidr');
+const { generateMiddleware } = require('express-cidr');
 
-const CIDRMiddleware = expressCIDR(IPRules: Array, Options: Object);
+const CIDRMiddleware = generateMiddleware(IPRules: Array, Options: Object);
 
 app.get('/', CIDRMiddleware, (req, res) => {
     return res.send('ok');
@@ -30,8 +30,7 @@ app.get('/', CIDRMiddleware, (req, res) => {
 About [CIDR](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing)
 ```
 [
-    '192.168.1.1/16',
-    '127.0.0.1/32'
+    '10.10.1.32/27',
 ]
 ```
 
@@ -44,9 +43,33 @@ About [CIDR](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing)
 ```
 
 ## Example
+#### Basic Usage
 ```
 const express = require('express');
-const expressCIDR = require('express-cidr');
+const { generateMiddleware: expressCIDR } = require('express-cidr');
+
+const app = express();
+
+app.get('/', expressCIDR([
+    '10.10.1.32/27'
+], { // options
+    reqTargetPath: 'headers.x-forwarded-for',
+    reqProcessFn: (ipAddrs) => {
+        const [ipAddr] = ipAddrs.split(',');
+        return ipAddr;
+    }
+}), (req, res) => {
+    return res.send('OK');
+});
+
+```
+`10.10.1.44` will be passed.
+`10.10.1.90` will be failed
+
+#### Error Handling
+```
+const express = require('express');
+const { generateMiddleware: expressCIDR, OutOfRange } = require('express-cidr');
 
 const app = express();
 
@@ -60,6 +83,13 @@ app.get('/', expressCIDR([
     }
 }), (req, res) => {
     return res.send('OK');
+});
+
+app.use((req, res, next, error) => {
+    if (error instanceOf OutOfRange) {
+        return res.statusCode(400).send();
+    }
+    return res.status(500).send();
 });
 
 ```

@@ -2,7 +2,7 @@ const assert = require('assert');
 const { describe, it } = require('mocha');
 const httpMocks = require('node-mocks-http');
 
-const { generateMiddleware: expressCIDR, OutOfRange } = require('../src');
+const { generateMiddleware: expressCIDR, OutOfRangeError } = require('../src');
 
 const expressMiddleware = expressCIDR([
 	'10.10.1.32/27',
@@ -40,19 +40,12 @@ describe('test basic running', function () {
 		}), true);
 		assert.ok(true);
 	});
-	// it('should throw error', function () {
-	// 	assert.throws(expressMiddleware(falseRequest, response, function () {
-	// 		return false;
-	// 	}), (error) => {
-	// 		assert(error instanceof OutOfRange);
-	// 		return true;
-	// 	});
-	// 	assert.ok(true);
-	// });
 	it('should throw error', function () {
-		assert.throws(expressMiddleware(falseRequest, response, function () {
-			return false;
-		}), new OutOfRange());
+		assert.throws(() => {
+			expressMiddleware(falseRequest, response, function () {
+				return false;
+			});
+		}, new OutOfRangeError());
 		assert.ok(true);
 	});
 });

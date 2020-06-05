@@ -7,8 +7,8 @@ An [express.js]( https://github.com/visionmedia/express ) middleware for
 
 - [Installation](#installation)
 - [Usage](#usage)
-- [Options](#options)
 - [Example](#example)
+- [Errors](#errors)
 
 ## Installation
 ```
@@ -64,12 +64,12 @@ app.get('/', expressCIDR([
 
 ```
 `10.10.1.44` will be passed.
-`10.10.1.90` will be failed
+`10.10.1.90` will be failed.
 
 #### Error Handling
 ```
 const express = require('express');
-const { generateMiddleware: expressCIDR, OutOfRange } = require('express-cidr');
+const { generateMiddleware: expressCIDR, OutOfRangeError } = require('express-cidr');
 
 const app = express();
 
@@ -85,11 +85,27 @@ app.get('/', expressCIDR([
     return res.send('OK');
 });
 
-app.use((req, res, next, error) => {
-    if (error instanceOf OutOfRange) {
+app.use((req, res, next, error) => { // error handler
+    if (error instanceOf OutOfRangeError) {
         return res.statusCode(400).send();
     }
     return res.status(500).send();
 });
 
+```
+
+## Errors
+
+#### OutOfRangeError
+Error object:
+
+* name: 'OutOfRangeError'
+* message: 'IP address is out of range'
+
+```
+class OutOfRangeError extends Error {
+    constructor() {
+        super('IP address is out of range');
+    }
+}
 ```

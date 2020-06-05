@@ -1,9 +1,9 @@
 import * as _ from 'lodash';
 
-import { OutOfRange } from './Errors';
+import { OutOfRangeError } from './Errors';
 
 const getFirstDigitPosition = function (value: number): number {
-	let diffPosition = 8;
+	let diffPosition = 0;
 	for (let i = 1; i <= 8; i += 1) {
 		if (value >> i === 0) {
 			diffPosition = i;
@@ -63,7 +63,7 @@ const generateMiddleware = function (rules: Array<string>, options: {
 		});
 
 		if (!filteringResult) {
-			throw new OutOfRange();
+			throw new OutOfRangeError();
 		}
 		return next();
 	};
@@ -71,5 +71,5 @@ const generateMiddleware = function (rules: Array<string>, options: {
 
 export = {
 	generateMiddleware,
-	OutOfRange
+	OutOfRangeError
 };

@@ -3,10 +3,10 @@ import * as _ from 'lodash';
 import { OutOfRangeError } from './Errors';
 
 const getFirstDigitPosition = function (value: number): number {
-	let diffPosition = 0;
+	let diffPosition = 8;
 	for (let i = 1; i <= 8; i += 1) {
 		if (value >> i === 0) {
-			diffPosition = i;
+			diffPosition -= i;
 			break;
 		}
 	}
@@ -42,7 +42,7 @@ const generateMiddleware = function (rules: Array<string>, options: {
 					return false;
 				}
 
-				let diffPosition = 8 - getFirstDigitPosition(result);
+				let diffPosition = getFirstDigitPosition(result);
 
 				if (checkLength < diffPosition) {
 					checkLength -= 8;

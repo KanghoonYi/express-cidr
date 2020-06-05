@@ -2,9 +2,9 @@ const assert = require('assert');
 const { describe, it } = require('mocha');
 const httpMocks = require('node-mocks-http');
 
-const { generateMiddleware: expressCIDR, OutOfRangeError } = require('../src');
+const { generateMiddleware, OutOfRangeError } = require('../src');
 
-const expressMiddleware = expressCIDR([
+const expressMiddleware = generateMiddleware([
 	'10.10.1.32/27',
 ], {
 	reqTargetPath: 'headers.x-forwarded-for',

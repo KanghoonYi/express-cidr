@@ -1,6 +1,4 @@
 # express-cidr
-This is being tested. It is recommended to use when version is 1.0.0
-
 An [express.js]( https://github.com/visionmedia/express ) middleware for
 [cidr]( https://github.com/KanghoonYi/express-cidr ).
 `Only for IPv4`

@@ -1,14 +1,12 @@
 # express-cidr
-This is being tested. It is recommended to use when version is 1.0.0
-
 An [express.js]( https://github.com/visionmedia/express ) middleware for
 [cidr]( https://github.com/KanghoonYi/express-cidr ).
 `Only for IPv4`
 
 - [Installation](#installation)
 - [Usage](#usage)
-- [Options](#options)
 - [Example](#example)
+- [Errors](#errors)
 
 ## Installation
 ```
@@ -17,9 +15,9 @@ npm install express-cidr
 
 ## Usage
 ```
-const expressCIDR = require('express-cidr');
+const { generateMiddleware } = require('express-cidr');
 
-const CIDRMiddleware = expressCIDR(IPRules: Array, Options: Object);
+const CIDRMiddleware = generateMiddleware(IPRules: Array, Options: Object);
 
 app.get('/', CIDRMiddleware, (req, res) => {
     return res.send('ok');
@@ -30,8 +28,7 @@ app.get('/', CIDRMiddleware, (req, res) => {
 About [CIDR](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing)
 ```
 [
-    '192.168.1.1/16',
-    '127.0.0.1/32'
+    '10.10.1.32/27',
 ]
 ```
 
@@ -44,9 +41,33 @@ About [CIDR](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing)
 ```
 
 ## Example
+#### Basic Usage
 ```
 const express = require('express');
-const expressCIDR = require('express-cidr');
+const { generateMiddleware: expressCIDR } = require('express-cidr');
+
+const app = express();
+
+app.get('/', expressCIDR([
+    '10.10.1.32/27'
+], { // options
+    reqTargetPath: 'headers.x-forwarded-for',
+    reqProcessFn: (ipAddrs) => {
+        const [ipAddr] = ipAddrs.split(',');
+        return ipAddr;
+    }
+}), (req, res) => {
+    return res.send('OK');
+});
+
+```
+`10.10.1.44` will be passed.
+`10.10.1.90` will be failed.
+
+#### Error Handling
+```
+const express = require('express');
+const { generateMiddleware: expressCIDR, OutOfRangeError } = require('express-cidr');
 
 const app = express();
 
@@ -62,4 +83,27 @@ app.get('/', expressCIDR([
     return res.send('OK');
 });
 
+app.use((req, res, next, error) => { // error handler
+    if (error instanceOf OutOfRangeError) {
+        return res.statusCode(400).send();
+    }
+    return res.status(500).send();
+});
+
+```
+
+## Errors
+
+#### OutOfRangeError
+Error object:
+
+* name: 'OutOfRangeError'
+* message: 'IP address is out of range'
+
+```
+class OutOfRangeError extends Error {
+    constructor() {
+        super('IP address is out of range');
+    }
+}
 ```
